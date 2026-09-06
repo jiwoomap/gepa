@@ -32,7 +32,7 @@ def _make_state(program_candidates, prog_val_scores, frontier, tracked_scores):
     }
     state.increment_evals = lambda count: setattr(state, "total_num_evals", state.total_num_evals + count)
 
-    def cached_evaluate_full(candidate, example_ids, fetcher, eval_fn):
+    def cached_evaluate_full(candidate, example_ids, fetcher, eval_fn, split=None):
         outputs, scores, obj_scores = eval_fn(fetcher(example_ids), candidate)
         outputs_by_id = dict(zip(example_ids, outputs, strict=False))
         scores_by_id = dict(zip(example_ids, scores, strict=False))

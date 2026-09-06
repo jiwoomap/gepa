@@ -14,7 +14,7 @@ from gepa.core.callbacks import (
     notify_callbacks,
 )
 from gepa.core.data_loader import DataId, DataLoader
-from gepa.core.state import GEPAState, ObjectiveScores, ProgramIdx
+from gepa.core.state import VALSET_CACHE_SPLIT, GEPAState, ObjectiveScores, ProgramIdx
 from gepa.gepa_utils import find_dominator_programs
 from gepa.logging.logger import LoggerProtocol
 from gepa.proposer.base import CandidateProposal, ProposeNewCandidate
@@ -119,6 +119,7 @@ class CrossoverProposer(ProposeNewCandidate[DataId]):
 
         self.logger = logger
         self.valset = valset
+        self.valset_cache_split = VALSET_CACHE_SPLIT
         self.evaluator = evaluator
         self.reflection_lm = reflection_lm
         self.use_crossover = use_crossover
@@ -321,7 +322,7 @@ class CrossoverProposer(ProposeNewCandidate[DataId]):
 
         # Metric-call axis: evaluate the child on the contested subsample only.
         outputs_by_id, scores_by_id, objective_by_id, actual_evals = state.cached_evaluate_full(
-            child, subsample_ids, self.valset.fetch, self.evaluator
+            child, subsample_ids, self.valset.fetch, self.evaluator, split=self.valset_cache_split
         )
         state.increment_evals(actual_evals)
 
